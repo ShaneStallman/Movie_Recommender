@@ -1,0 +1,48 @@
+:root {
+    --banner-height: 64px;
+  }
+  .dashboard-container {
+    height: 100vh;
+  }
+  .banner{
+    background-color: blueviolet;
+    height: 10vh;
+    display: flex;
+    justify-content: space-between;
+  }
+  .content {
+    display: flex;
+    flex-direction: column; 
+  }
+  
+  .flex-container {
+    display: flex;
+    height: 80vh;
+  }
+  
+  .search-container {
+    flex: 15vw; 
+    margin-right: 10px; 
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .table-container {
+    flex: 85vw; 
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .card {
+    border: 1px solid black;
+    height: 240px;
+    width: 140px;
+  }
+
+  .movieInput {
+    height: 30px;
+    width: 600px;
+  }
+  
