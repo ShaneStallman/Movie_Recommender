@@ -48,6 +48,8 @@ async function basicServer(request, response) {
         type = 'application/json';
       } else if (pathname.endsWith('.html')) {
         type = 'text/html';
+      } else if (pathname.endsWith('.png')) {
+        type = 'img/png';
       } else if (pathname.endsWith('/')) {
         type = 'text/html';
       } else {

@@ -17,18 +17,22 @@
         <div class="flex-container">
           <div class="search-container">
             <h3>Search Bars</h3>
-            <Button>What's New</Button>
-            <Button>Trending</Button>
-            <Button>Feeling Lucky</Button>
-            <Button>Genres</Button>
+            <Button class = "link">What's New</Button>
+            <Button class = "link">Trending</Button>
+            <Button class = "link">Feeling Lucky</Button>
+            <Button class = "link">Genres</Button>
           </div>
-          <div class="table-container">
-            <Input placeholder="Find Similar Movies To..." class ="movieInput"></Input>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
-            <div class="card"></div>
+          <div class="table-container" id="movieGridDisplay">
+            <div class="searchBar">
+              <Input id="input" placeholder="Find Similar Movies To..." class ="movieInput"></Input>
+              <Button id="mvSwitch">Movies</Button>
+              <Button id="tvSwitch">TV Series</Button>
+            </div>
+            <div class="display" id="theGrid"></div>
           </div>
+        <div id="infoDisplay" class="infoDisplay" style="display: none;">
+          <Button id="back"> &#8592 Back</Button>
+        </div> 
         </div>
       </div>
     </div>

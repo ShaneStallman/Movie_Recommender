@@ -21,13 +21,24 @@
   }
   
   .search-container {
-    flex: 15vw; 
+    width: 15vw;
     margin-right: 10px; 
     border: 1px solid #ccc;
     padding: 10px;
+    justify-content: flex;
+    position: relative;
   }
   
-  .table-container {
+  .table-container{
+    width: 85vw;
+  }
+
+  .searchBar {
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+  .display {
     flex: 85vw; 
     border: 1px solid #ccc;
     padding: 10px;
@@ -37,12 +48,41 @@
 
   .card {
     border: 1px solid black;
-    height: 240px;
-    width: 140px;
+    height: 280px;
+    width: 180px;
   }
-
+  .cardImg{
+    border: 1px solid black;
+    height: 280px;
+    width: 180px;
+  }
+  .grid-col{
+    align-content: space-around;
+  }
   .movieInput {
     height: 30px;
     width: 600px;
   }
+
+  .link {
+    background: none!important;
+    border: none;
+    padding: 0!important;
+    /*optional*/
+    font-family: arial, sans-serif;
+    /*input has OS specific font-family*/
+    color: #069;
+    text-decoration: underline;
+    cursor: pointer;
+  }
   
+  .infoDisplay {
+    width: 85vw;
+    margin-right: 10px; 
+    border: 1px solid #ccc;
+    padding: 10px;
+    justify-content: flex;
+    position: relative;
+    border: 1px solid black;
+    background-color: #069;
+  }
