@@ -1,80 +1,161 @@
+
+import chalkAnimation from 'chalk-animation';
+import express from 'express';
+import logger from 'morgan';
+import { mongo } from './database.js';
 import { readFile } from 'fs/promises';
-import * as http from 'http';
-import * as url from 'url';
 
+const app = express();
+const port = process.env.PORT || 3000;
 
-// ... (Your existing imports and setup)
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({ extended: false, limit: '50mb'}));
+app.use(logger('dev'));
+app.use('/', express.static('src'));
 
-
-// A basic server function to implement a simple RESTful API.
-async function basicServer(request, response) {
-  const parsedUrl = url.parse(request.url, true);
-  const pathname = parsedUrl.pathname;
-  const method = request.method;
-
-  if (pathname === '/api/genres' && method === 'GET') {
-    const url = 'https://moviesdatabase.p.rapidapi.com/titles/utils/genres';
-    const options = {
-      method: 'GET',
-      headers: {
-        'X-RapidAPI-Key': 'e88a0805d4mshe025932791973e2p131fcbjsn2e209adf7d6b',
-        'X-RapidAPI-Host': 'moviesdatabase.p.rapidapi.com'
-      }
-    };
+app.post('/addMovie', async (req, res) => {
+    const information = req.body;
     try {
-        const responseFromAPI = await fetch(url, options);
-        const genres = await responseFromAPI.json();
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify(genres)); // Return genres to the client as JSON
-      } catch (error) {
-        console.error(error);
-        response.writeHead(500, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify({ error: 'Internal Server Error' }));
-      }
-    // Rest of your code to fetch genres from the Movies Database API and send response
-    // ...
-  } else {
-    // This part handles the static files. If we do not match any of the routes
-    // above, we assume it is a static file and serve it from the 'client'
-    // directory.
-    try {
-      // Determine the content type of the requested file (if it is a file).
-      let type = '';
-      if (pathname.endsWith('.css')) {
-        type = 'text/css';
-      } else if (pathname.endsWith('.js')) {
-        type = 'text/javascript';
-      } else if (pathname.endsWith('.json')) {
-        type = 'application/json';
-      } else if (pathname.endsWith('.html')) {
-        type = 'text/html';
-      } else if (pathname.endsWith('.png')) {
-        type = 'img/png';
-      } else if (pathname.endsWith('/')) {
-        type = 'text/html';
-      } else {
-        type = 'text/plain';
-      }
-      // The client files are found in the client directory, so we must prepend
-      // the client path to the file requested. We also recognize the meaning of
-      // a '/' to refer to the index.html file.
-      const file = pathname === '/' ? 'src/index.html' : pathname.substring(1);
-      console.log(file.toString());
-      const data = await readFile(file, 'utf8');
-      response.writeHead(200, { 'Content-Type': type });
-      response.write(data);
-    } catch (err) {
-      response.statusCode = 404;
-      response.write('Not found');
+      await mongo.connect();
+      await mongo.createNewMovie(information)
+      .then(() => {
+        res.status(200).json({ status: 'success' });
+      })
+      .catch((error) => {
+        console.error('Error adding Movie:', error);
+        res.status(500).json({ status: 'error', message: 'Failed to add Movie' });
+      });
+      await mongo.close();
+    } catch (error) {
+        console.error('Error adding Movie:', error);
+        res.status(500).json({ status: 'error', message: 'Failed to add Movie' });
     }
-    response.end();
-  }
-}
+});
+ 
+app.get('/getMovie', async (req, res) => {
+    const id = req.query.id;
+    try {
+    await mongo.connect();
+    const data = await mongo.searchMovieByID(id);
+    const movie = data[0];
+    res.status(200).json(movie);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
 
+  app.get('/getMyList', async (req, res) => {
+    const list = req.query.list;
+    const listArray = list.split(',');
+    try {
+    await mongo.connect();
+    const data = await mongo.getMyList(listArray);
+    res.status(200).json(data);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
 
+  app.get('/getGenre', async (req, res) => {
+    const genre = req.query.genre;
+    try {
+    await mongo.connect();
+    const data = await mongo.searchMoviesByGenre(genre);
+    res.status(200).json(data);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
 
-  // ... (Your existing server creation and listen logic)
+  app.get('/getSimilar', async (req, res) => {
+    const type = req.query.type;
+    const title = req.query.title;
+    try {
+    await mongo.connect();
+    const data = await mongo.compareAllMovies(type, title);
+    res.status(200).json(data);
+    //await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
+
+  app.get('/getRandom', async (req, res) => {
+    try {
+    await mongo.connect();
+    const data = await mongo.getRandom();
+    const movie = data[0];
+    res.status(200).json(movie);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
+
+  app.get('/whatsNew', async (req, res) => {
+    try {
+    await mongo.connect();
+    const data = await mongo.getWhatsNew();
+    res.status(200).json(data);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
+
+  app.patch('/editMovie', async (req, res) => {
+    const {title, field, newValue} = req.body;
+    try {
+    await mongo.connect();
+    const data = await mongo.editMovie(title, field, newValue);
+    res.status(200).json(data);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
+
+  app.patch('/addRating', async (req, res) => {
+    const {title, rating} = req.body;
+    try {
+    await mongo.connect();
+    const data = await mongo.addRatingMovie(title, rating);
+    res.status(200).json(data);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
+
+app.all('*', async (request, response) => {
+    response.status(404).send(`Not found: ${request.path}`);
+  });
   
-http.createServer(basicServer).listen(3000, () => {
-    console.log('Server started on port 3000');
+  app.listen(port, () => {
+    const banner = `WELCOME`;
+    const msg = `${banner}\n     Server started on http://localhost:${port}`;
+    const rainbow = chalkAnimation.rainbow(msg);
+  
+    setTimeout(() => {
+      rainbow.stop();
+    }, 2000);
   });

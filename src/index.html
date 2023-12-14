@@ -4,27 +4,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Movie Recommender</title>
-    <script type="module" src="src/main.js" defer></script>
-    <link rel="stylesheet" href="src/main.css" />
+    <script type="module" src="./main.js" defer></script>
+    <link rel="stylesheet" href="./main.css" />
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   </head>
   <body>
     <div class="dashboard-container">
       <div class="banner">
-        <h1>Movie Recommender</h1>
-        <Button>Profile</Button>
+        <span>&nbsp;&nbsp;<h1 class="fa fa-film" style="font-size:36px"> Movie Recommender</h1></span>
+        <div class="dropdown">
+          <Button class="fa fa-user-circle" style="padding: 10px; border: none; background: none; font-size: 42px;">&nbsp;</Button>
+          <div class="dropdown-content-profile">
+            <a id="myListLink" href="#">My List</a>
+            <a href="#">Settings</a>
+          </div>
+        </div>
+        
       </div>
       <div class="content">
         <div class="flex-container">
           <div class="search-container">
             <h3>Search Bars</h3>
-            <Button class = "link">What's New</Button>
-            <Button class = "link">Trending</Button>
-            <Button class = "link">Feeling Lucky</Button>
-            <Button class = "link">Genres</Button>
+            <Button id="new" class = "link">What's New</Button>
+            <Button id="trend" class = "link">Trending</Button>
+            <Button class = "link" id="lucky">Feeling Lucky</Button>
+            <div class="dropdown">
+              <Button id="genreSearch" class = "dropbtn">Genres</Button>
+              <div class="dropdown-content-genre">
+                <Button class = "genreLink">Action</Button>
+                <Button class = "genreLink">Adventure</Button>
+                <Button class = "genreLink">Animation</Button>
+                <Button class = "genreLink">Biography</Button>
+                <Button class = "genreLink">Comedy</Button>
+                <Button class = "genreLink">Crime</Button>
+                <Button class = "genreLink">Documentary</Button>
+                <Button class = "genreLink">Drama</Button>
+                <Button class = "genreLink">Family</Button>
+                <Button class = "genreLink">Fantasy</Button>
+                <Button class = "genreLink">Game-Show</Button>
+                <Button class = "genreLink">History</Button>
+                <Button class = "genreLink">Horror</Button>
+                <Button class = "genreLink">Musical</Button>
+                <Button class = "genreLink">Mystery</Button>
+                <Button class = "genreLink">Reality-TV</Button>
+                <Button class = "genreLink">Romance</Button>
+                <Button class = "genreLink">Sci-Fi</Button>
+                <Button class = "genreLink">Sport</Button>
+                <Button class = "genreLink">Talk-Show</Button>
+                <Button class = "genreLink">Thriller</Button>
+                <Button class = "genreLink">War</Button>
+                <Button class = "genreLink">Western</Button>
+              </div>
+            </div>
+            <Button id = "add"> Add A Movie/Series!</Button>
           </div>
           <div class="table-container" id="movieGridDisplay">
+            
             <div class="searchBar">
+              <span class = "fa fa-search" style = "font-size: 20px;"></span>
               <Input id="input" placeholder="Find Similar Movies To..." class ="movieInput"></Input>
+              <Button id="search">Search</Button>
               <Button id="mvSwitch">Movies</Button>
               <Button id="tvSwitch">TV Series</Button>
             </div>
@@ -32,6 +72,99 @@
           </div>
         <div id="infoDisplay" class="infoDisplay" style="display: none;">
           <Button id="back"> &#8592 Back</Button>
+          <div class = "information">
+            <div id="movieCover" class="cover">
+             <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Question_mark_grey.svg" id="movieImg" class="coverImage">
+            </div>
+          <div id="movieInfo" class="info">
+            <span id="movieTitle" class = "infoTitle"> Title &nbsp;&nbsp;</span><i id="favorite" class="fa fa-heart-o" style="font-size:45px;">&nbsp;&nbsp;</i><br/>
+            <label class = "info_label">Director: </label>
+            <span id="directorName" class = "infoText"> Director</span><br/>
+            <label class = "info_label">Cast: </label>
+            <span id="actorNames" class = "infoText"> Cast </span><br/>
+            <label class = "info_label">Summary: </label>
+            <span id="summary" class = "infoText"> Summary </span><br/>
+            <label class = "info_label">Genres: </label>
+            <span id="genres" class = "infoText"> Genres </span><br/>
+            <label class = "info_label">Overall Rating: </label>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span>
+            <span class="fa fa-star checked"></span><br/>
+            <button class="editor" id="openEdit">Edit</button>
+            <div class="chat-popup" id="myForm" style="display: none;">
+              <form enctype="multipart/form-data" class="form-container">
+                <h1>Edit<i>&nbsp;&nbsp;</i><i id="editText" class="fa fa-edit" style="font-size:12px;"></i></h1>
+            
+                <select id="editSelect" name="Edit Field">
+                  <option value="0">Choose Field</option>
+                  <option value="1">Title</option>
+                  <option value="2">Director</option>
+                  <option value="3">Cast</option>
+                  <option value="4">Summary</option>
+                  <option value="5">Genres</option>
+                  <option value="6">Image</option>
+                </select>
+                <textarea id="textChange" placeholder="Text Changes Here or Image Change Below" name="msg" required></textarea>
+                <input class = "editFile" type="file" id="imageChange" accept="image/*" style="display: none;">
+                <button id="editSubmit" type="submit" class="btn">Submit Edit</button>
+                <button type="button" id="closeEdit" class="btn cancel">Cancel Edit</button>
+              </form>
+            </div>
+          </div>
+          </div>
+          <div id="ratings" class="rating">/** Ratings go Here **/
+            <Button id="addRating">Add Rating</Button>
+            <div class="chat-popup" id="ratingForm" style="display: none;">
+              <form enctype="multipart/form-data" class="form-container">
+                <h1>Rating</h1>
+            
+                <input id="stars" placeholder="stars">
+                <textarea id="reviewText" placeholder="Leave a Review Here!" name="msg" required></textarea>
+                <input id="tags" placeholder="Add Some Tag Words">
+                <button id="ratingSubmit" type="submit" class="btn">Submit Edit</button>
+                <button type="button" id="closeRating" class="btn cancel">Cancel Edit</button>
+              </form>
+            </div>
+          </div>
+        </div> 
+        <div id="infoDisplay2" class="infoDisplay2" style="display: none;">
+          <Button id="back2"> &#8592 Back</Button>
+          <div class = "information2">
+            <form class="addForm" id="addForm" enctype="multipart/form-data">
+              <label for="typeSelect">Type:</label>
+              <select id="typeSelect" name="type">
+                  <option value="0">Movie</option>
+                  <option value="1">TV Series</option>
+              </select>
+          
+              <label for="titleInput">Title:</label>
+              <input id="titleInput" type="text" placeholder="Ex: Avengers: Endgame" name="title">
+
+              <label for="releaseDateInput">Release Date:</label>
+              <input id="releaseDateInput" type="text" placeholder="Ex: 4/26/2019" name="release date">
+          
+              <label for="directorInput">Director:</label>
+              <input id="directorInput" type="text" placeholder="Ex: Joe Russo, Anthony Russo" name="director">
+          
+              <label for="mainCastInput">Main Cast:</label>
+              <input id="mainCastInput" type="text" placeholder="Ex: Robert Downy Jr., Chris Evans, ..." name="mainCast">
+          
+              <label for="genresInput">Genres:</label>
+              <input id="genresInput" type="text" placeholder="Ex: Action, Adventure" name="genres">
+          
+              <label for="summaryInput">Summary:</label>
+              <textarea id="summaryInput" placeholder="Enter short summary here" name="summary"></textarea>
+          
+              <label for="fileInput">Upload Image:</label>
+              <input type="file" id="fileInput" accept="image/*">
+          
+              <input type="submit" value="Submit">
+          </form>
+          </div>
+          <div id="ratings" class="rating">/** Ratings go Here **/</div>
+          <button id="submit">Submit</button>
         </div> 
         </div>
       </div>
