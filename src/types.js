@@ -1,10 +1,3 @@
-export class Movie {
-    constructor (image, title, year){
-      this.image = image;
-      this.title = title;
-      this.year = year;
-  }
-}
 
 export class MovieInfo {
     constructor (type, image, title, {m,d,y}, genres, castList, directors, summary, ratings){

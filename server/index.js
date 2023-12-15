@@ -32,6 +32,21 @@ app.post('/addMovie', async (req, res) => {
     }
 });
  
+app.delete('/deleteMovie', async (req, res) => {
+  const id = req.query.id;
+  console.log(id);
+    try {
+    await mongo.connect();
+    const data = await mongo.deleteMovieByID(id);
+    res.status(200).json(data);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error deleting movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to delete movie' });
+    }
+});
+
 app.get('/getMovie', async (req, res) => {
     const id = req.query.id;
     try {

@@ -45,6 +45,19 @@ async searchMovieByID(title) {
   return res;
 }
 
+async deleteMovieByID(title) {
+  try {
+    const res = await this.collection.deleteOne({'information.title': title });
+    if (res.deletedCount === 1) {
+      return { success: true, message: 'Movie deleted successfully' };
+    } else {
+      return { success: false, message: 'Movie not found or not deleted' };
+    }
+  } catch (error) {
+    return { success: false, message: 'An error occurred while deleting the movie' };
+  }
+}
+
 async getMyList(list) {
   console.log(list);
   let resArray = []

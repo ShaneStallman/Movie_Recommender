@@ -86,7 +86,7 @@
 .card {
     height: 280px;
     width: 180px;
-    margin: 10px; /* Add some margin to separate the cards */
+    margin: 10px; 
     border-radius: 10px;
 }
 
@@ -99,9 +99,9 @@
 }
 
 .cardImg {
-    height: 100%; /* Ensure the image fills the card container */
+    height: 100%; 
     width: 100%;
-    object-fit: cover; /* Maintain aspect ratio without stretching */
+    object-fit: cover;
     border-radius: 10px;
 }
 
@@ -110,7 +110,7 @@
     flex-direction: column;
     flex-wrap: wrap;
     align-content: space-around;
-    gap: 10px; /* Gap between columns */
+    gap: 10px; 
 }
   .movieInput {
     height: 30px;
@@ -121,9 +121,7 @@
     background: none!important;
     border: none;
     padding: 0!important;
-    /*optional*/
     font-family: arial, sans-serif;
-    /*input has OS specific font-family*/
     color: white;
     text-decoration: underline;
     cursor: pointer;
@@ -172,20 +170,19 @@
   }
 
   .cover {
-    width: 240px; /* Set width of the container */
-    height: 360px; /* Set height of the container */
-     /* Optional: Border for visualization */
+    width: 240px; 
+    height: 360px; 
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Hide overflow content */
+    overflow: hidden;
     border-radius: 10px;
   }
   
   .coverImage {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Adjusts the image to cover the entire container */
+    object-fit: cover; 
   }
 
   .explore{
@@ -281,14 +278,14 @@
   .addForm {
     max-width: 300px;
     margin: 0 auto;
-    text-align: left; /* Aligns text and form elements to the left */
+    text-align: left;
 }
 
 .addForm label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    text-align: left; /* Ensures labels are aligned left */
+    text-align: left; 
 }
 
 .addForm input[type="text"],
@@ -304,10 +301,8 @@
 .addForm input[type="file"],
 .addForm input[type="submit"] {
     margin-top: 10px;
-    /* Additional styles for file input and submit button if needed */
 }
 
-/* Optional: Style submit button */
 .addForm input[type="submit"] {
     background-color: rgba(209, 134, 146, 1);
     color: white;
@@ -329,7 +324,7 @@
   color: orange;
 }
 
-/* Dropdown Button */
+
 .dropbtn {
   background: none!important;
   border: none;
@@ -341,21 +336,19 @@
   font-size: 20px;
 }
 
-/* The container <div> - needed to position the dropdown content */
 .dropdown {
   position:relative;
   display:inline-block;
 }
 
-/* Dropdown Content (Hidden by Default) */
 .dropdown-content-profile {
   display: none;
   position: absolute;
   background-color: rgb(255, 217, 235);
-  width: 160px; /* Optional: Set a fixed width if needed */
+  width: 160px; 
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  left: -160px; /* Adjust the value based on the width of the dropdown */
+  left: -160px; 
   top: 0px;
 }
 
@@ -364,14 +357,13 @@
   position: absolute;
   background-color: rgb(255, 217, 235);
   border-radius: 10px;
-  width: 15vw; /* Optional: Set a fixed width if needed */
+  width: 15vw;
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  left: -80px; /* Adjust the value based on the width of the dropdown */
+  left: -80px; 
   top: -60vh;
 }
 
-/* Links inside the dropdown */
 .dropdown-content-profile a {
   color: black;
   padding: 12px 16px;
@@ -387,14 +379,10 @@
   display: block;
 }
 
-/* Change color of dropdown links on hover */
 .dropdown-content-profile a:hover{background-color: rgb(255, 160, 212);}
-
-
 
 .genreLink:hover {background-color: rgb(255, 160, 212);}
 
-/* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content-profile {
   display: block;
 }
@@ -403,10 +391,8 @@
   display: block;
 }
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {background-color: rgb(253, 154, 231);}
 
-/* Button used to open the chat form - fixed at the bottom of the page */
 .open-button {
   background-color: #555;
   color: white;
@@ -420,7 +406,6 @@
   width: 280px;
 }
 
-/* The popup chat - hidden by default */
 .form-popup {
   display: none;
   position: fixed;
@@ -430,14 +415,12 @@
   z-index: 9;
 }
 
-/* Add styles to the form container */
 .form-container {
   max-width: 300px;
   padding: 10px;
   background-color: white;
 }
 
-/* Full-width textarea */
 .form-container textarea {
   width: 100%;
   padding: 15px;
@@ -448,13 +431,11 @@
   min-height: 200px;
 }
 
-/* When the textarea gets focus, do something */
 .form-container textarea:focus {
   background-color: #ddd;
   outline: none;
 }
 
-/* Set a style for the submit/login button */
 .form-container .btn {
   background-color: #04AA6D;
   color: white;
@@ -466,12 +447,10 @@
   opacity: 0.8;
 }
 
-/* Add a red background color to the cancel button */
 .form-container .cancel {
   background-color: red;
 }
 
-/* Add some hover effects to buttons */
 .form-container .btn:hover, .open-button:hover {
   opacity: 1;
 }

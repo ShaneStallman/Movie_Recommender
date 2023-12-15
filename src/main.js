@@ -1,6 +1,7 @@
 import {MovieInfo, Rating} from './types.js';
 import {showMovie} from './movieInfo.js';
 
+/* User Watch List, Profile and Local Storage */
 let userWatchList = [];
 const storedList = localStorage.getItem('myList');
 if (storedList) {
@@ -8,6 +9,23 @@ if (storedList) {
 }
 localStorage.setItem('myList', JSON.stringify(userWatchList));
 
+document.getElementById("myListLink").addEventListener('click', (event) => {
+    let myList = JSON.parse(localStorage.getItem('myList'))
+    console.log(myList);
+    console.log(myList.length == 0)
+    if(myList.length == 0){
+        console.log(window.alert("Your List Is Empty!"));
+    }
+    else{
+        setMovieInfoMyList(myList);
+    }
+});
+
+document.getElementById("userLink").addEventListener('click', (event) => {
+    /** Implement Username */
+});
+
+/* Element Initializers */
 const movieInput = document.getElementById("input");
 const movieSwitch = document.getElementById("mvSwitch");
 const TVSwitch = document.getElementById("tvSwitch");
@@ -23,20 +41,19 @@ const favorite = document.getElementById("favorite");
 const whatsNew = document.getElementById("new");
 const genreSearch = document.getElementById("genreSearch");
 const trending = document.getElementById("trend");
+const editImg = document.getElementById("imageChange");
+const editText = document.getElementById("textChange");
+const editType = document.getElementById("editSelect");
+const editSubmit = document.getElementById("editSubmit");
+const infoForm = document.getElementById("addForm");
 
 let infoDisplaySwitcher = false;
 let addMovieDisplaySwitcher = false;
 let switcher = true; 
 
-const elements = document.querySelectorAll('.genreLink');
 
-elements.forEach(element => {
-  element.addEventListener('click', (event) => {
-    console.log(element.textContent);
-   setMovieInfoGenre(element.textContent);
-  });
-});
 
+/* Search Bar */
 movieSwitch.addEventListener('click', (event) => {
     switcher = true;
     movieInput.placeholder = "Find Similar Movies To...";
@@ -49,6 +66,19 @@ TVSwitch.addEventListener('click', (event) => {
     console.log(switcher);
 });
 
+document.getElementById("search").addEventListener('click', (event) => {
+    let type = 0;
+    if(switcher == true){
+        type = 0;
+    }
+    if(switcher == false){
+        type = 1;
+    }
+    let title = document.getElementById("input").value;
+    getSimilar(type, title);
+});
+
+/* Main Page Display */
 backButton.addEventListener('click', (event) => {
     setDisplay();
 });
@@ -88,21 +118,6 @@ function renderDisplay(movieArray){
     }
 }
 
-function addMovieDisplay(){
-    if(addMovieDisplaySwitcher === false){
-        infoDisplay.style.display = 'none';
-        movieGridDisplay.style.display = 'none';
-        addDisplay.style.display = 'block';
-        addMovieDisplaySwitcher = true;
-    }
-    else if (addMovieDisplaySwitcher){
-        infoDisplay.style.display = 'none';
-        movieGridDisplay.style.display = 'block';
-        addDisplay.style.display = 'none';
-        addMovieDisplaySwitcher = false;
-    }
-}
-
 const buildDisplay = () => {
     let index = 0;
     const numCols = 5,
@@ -124,7 +139,7 @@ const buildDisplay = () => {
         loadInfo(pressedInfo);
         setDisplay();
         console.log(newSquare.classList.toString());
-        }); /*Change the screen to display movie info */
+        });
        let newImg = document.createElement('img');
        newImg.classList.add("cardImg");
        newImg.src = "https://upload.wikimedia.org/wikipedia/commons/0/03/Question_mark_grey.svg";
@@ -138,142 +153,13 @@ const buildDisplay = () => {
        col.appendChild(newSquare);
      }
    }
-  };
+};
   
-  buildDisplay();
+buildDisplay();
   
-  const buildRatings = (ratings) => {
-    let index = 0;
-    const numCols = ratings.length, ratingList = document.getElementById('ratingsList');
-    ratingList.innerHTML = "";
-    for(let i = 0; i < numCols; i++){
-      let col = document.createElement('div');
-      col.classList.add('rating');
-      let stars = ratings[i].stars;
-      let review = ratings[i].review;
-      let tags = ratings[i].tags;
-      let author = ratings[i].author;
-      let starsElement = document.createElement('div');
-      let temp = stars
-      console.log(temp);
-      while(temp >= 0.5){
-        let star = document.createElement('i');
-        if(temp >= 1){
-            star.classList.add("fa", "fa-star");
-            temp--;
-        }
-        else if(temp > 0){
-            star.classList.add("fa","fa-star-half");
-            temp = temp - 0.5;
-        }
-        starsElement.appendChild(star);
-      }
-      let starsLabel = document.createElement('i');
-      starsLabel.textContent = "  (" + stars + ")";
-      starsElement.appendChild(starsLabel);
-      starsElement.classList.add("starsElement");
-      col.appendChild(starsElement);
-      let reviewElement = document.createElement('div');
-      reviewElement.textContent = review;
-      reviewElement.classList.add("reviewElement");
-      col.appendChild(reviewElement);
-      let tagsElement = document.createElement('div');
-      tagsElement.textContent = "Tags:  " +  tags;
-      tagsElement.classList.add("tagsElement");
-      col.appendChild(tagsElement);
-      let authorElement = document.createElement('div');
-      let img = document.createElement('i');
-      img.classList.add("fa" , "fa-user-circle");
-      authorElement.appendChild(img);
-      let authorName = document.createElement('i');
-      authorName.textContent = "  " + author;
-      authorElement.appendChild(authorName);
-      authorElement.classList.add("authorElement");
-      col.appendChild(authorElement);
-      let spacer = document.createElement('div');
-      spacer.classList.add("spacer");
-      ratingList.appendChild(spacer);
-      ratingList.appendChild(col);  
-   }
-  };
 
-  async function calculateAvergaeRating(title){
-    let movie = await showMovie.getMovie(title);
-    let ratings = movie.ratings;
-    if(ratings.length == 0){
-        return 0;
-    }
-    else{
-    let total = 0;
-    for (let i = 0; i < ratings.length; ++i){
-        total = total + parseInt(ratings[i].stars, 10)
-        console.log(total);
-    }
-    return (total/ratings.length);
-    }   
-  }
 
-  async function loadInfo(movieInfo){
-    /* Load Image */
-    document.getElementById("movieImg").src=movieInfo.image;
-    let array = JSON.parse(localStorage.getItem('myList'));
-    if(array.includes(movieInfo.title)){
-        console.log(favorite.classList)
-        console.log(favorite.classList.contains('fa-heart-o'))
-        if(favorite.classList.contains('fa-heart-o')){
-            favorite.classList.toggle('fa-heart-o');
-            favorite.classList.toggle('fa-heart');
-            favorite.style.fontSize = '45px';
-            favorite.style.color = 'red';
-        }
-    }
-    else{
-        if(favorite.classList.contains('fa-heart')){
-            favorite.classList.toggle('fa-heart');
-            favorite.classList.toggle('fa-heart-o');
-            favorite.style.fontSize = '45px';
-            favorite.style.color = 'black';
-        }
-    }
-    /** Load Info Object
-     * Title
-     * Director
-     * Genre
-     * Actor
-     */
-    document.getElementById("movieTitle").textContent = movieInfo.title + " (" + movieInfo.releaseDate.y + ")";
-    document.getElementById("directorName").textContent = movieInfo.directors;
-    document.getElementById("actorNames").textContent = movieInfo.castList;
-    document.getElementById("summary").textContent = movieInfo.summary;
-    document.getElementById("genres").textContent = movieInfo.genres;
-    /** Load Ratings
-     * 
-     */
-    document.getElementById("starRating").innerHTML = "";
-    let ratingCalc = await calculateAvergaeRating(movieInfo.title);
-    let temp = ratingCalc;
-    let starRating = document.createElement('div');
-      console.log(temp);
-      while(temp >= 0.5){
-        let star = document.createElement('i');
-        if(temp >= 1){
-            star.classList.add("fa", "fa-star");
-            temp--;
-        }
-        else if(temp > 0){
-            star.classList.add("fa","fa-star-half");
-            temp = temp - 0.5;
-        }
-        starRating.appendChild(star);
-      }
-      
-      let numberRating = document.createElement('i');
-      numberRating.textContent = "  (" + Math.round(ratingCalc * 10) / 10 + ")";
-      starRating.appendChild(numberRating);
-    document.getElementById("starRating").appendChild(starRating);
-    buildRatings(movieInfo.ratings);
-  }
-
+/* Add Movie Display */
 addButton.addEventListener('click', () => {
     addMovieDisplay();
 });
@@ -282,10 +168,58 @@ addButton2.addEventListener('click', () => {
     addMovieDisplay();
 });
 
+function addMovieDisplay(){
+    if(addMovieDisplaySwitcher === false){
+        infoDisplay.style.display = 'none';
+        movieGridDisplay.style.display = 'none';
+        addDisplay.style.display = 'block';
+        addMovieDisplaySwitcher = true;
+    }
+    else if (addMovieDisplaySwitcher){
+        infoDisplay.style.display = 'none';
+        movieGridDisplay.style.display = 'block';
+        addDisplay.style.display = 'none';
+        addMovieDisplaySwitcher = false;
+    }
+}
+
 backButton2.addEventListener('click', (event) => {
     addMovieDisplay();
 });
 
+infoForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const type = document.getElementById("typeSelect").value;
+    const title = document.getElementById("titleInput").value;
+    const releaseDate = document.getElementById("releaseDateInput").value;
+    const directors = document.getElementById("directorInput").value;
+    const castList = document.getElementById("mainCastInput").value;
+    const genres = document.getElementById("genresInput").value;
+    const summary = document.getElementById("summaryInput").value;
+    const image = document.getElementById("fileInput");
+    const ratings = [];
+    
+    let dateArray = releaseDate.split('/');
+    let m = dateArray[0];
+    let d = dateArray[1];
+    let y = dateArray[2];
+
+    const imageFile = document.getElementById('fileInput').files[0];
+    let base64 = null;
+    await getBase64(imageFile)
+    .then((base64String) => {
+        base64 = base64String;
+    })
+    .catch((error) => {
+        console.error('Error converting file to Base64:', error);
+    });
+    let movieObj = new MovieInfo(type, base64, title, {m,d,y}, genres, castList, directors, summary);
+    await showMovie.createNewMovie(movieObj, ratings);
+    window.alert("Movie Added! Reloading Database...");
+    location.reload();
+});
+
+/* Database Information Retrieval calls */
 async function setMovieInfo(title){
     let pullMovie = await showMovie.getMovie(title);
     const dataUrl = pullMovie.information.image; // Your Data URL here
@@ -479,19 +413,62 @@ async function getSimilar(type, title){
         }
     console.log(returnArray)
     renderDisplay(returnArray);
-    }
+}
 
-document.getElementById("search").addEventListener('click', (event) => {
-    let type = 0;
-    if(switcher == true){
-        type = 0;
+/* Movie Display */
+async function loadInfo(movieInfo){
+    /* Load Image */
+    document.getElementById("movieImg").src=movieInfo.image;
+    let array = JSON.parse(localStorage.getItem('myList'));
+    if(array.includes(movieInfo.title)){
+        console.log(favorite.classList)
+        console.log(favorite.classList.contains('fa-heart-o'))
+        if(favorite.classList.contains('fa-heart-o')){
+            favorite.classList.toggle('fa-heart-o');
+            favorite.classList.toggle('fa-heart');
+            favorite.style.fontSize = '45px';
+            favorite.style.color = 'red';
+        }
     }
-    if(switcher == false){
-        type = 1;
+    else{
+        if(favorite.classList.contains('fa-heart')){
+            favorite.classList.toggle('fa-heart');
+            favorite.classList.toggle('fa-heart-o');
+            favorite.style.fontSize = '45px';
+            favorite.style.color = 'black';
+        }
     }
-    let title = document.getElementById("input").value;
-    getSimilar(type, title);
-});
+    /** Load Info Object */
+    document.getElementById("movieTitle").textContent = movieInfo.title + " (" + movieInfo.releaseDate.y + ")";
+    document.getElementById("directorName").textContent = movieInfo.directors;
+    document.getElementById("actorNames").textContent = movieInfo.castList;
+    document.getElementById("summary").textContent = movieInfo.summary;
+    document.getElementById("genres").textContent = movieInfo.genres;
+    /** Load Ratings */
+    document.getElementById("starRating").innerHTML = "";
+    let ratingCalc = await calculateAvergaeRating(movieInfo.title);
+    let temp = ratingCalc;
+    let starRating = document.createElement('div');
+      console.log(temp);
+      while(temp >= 0.5){
+        let star = document.createElement('i');
+        if(temp >= 1){
+            star.classList.add("fa", "fa-star");
+            temp--;
+        }
+        else if(temp > 0){
+            star.classList.add("fa","fa-star-half");
+            temp = temp - 0.5;
+        }
+        starRating.appendChild(star);
+      }
+      
+      let numberRating = document.createElement('i');
+      numberRating.textContent = "  (" + Math.round(ratingCalc * 10) / 10 + ")";
+      starRating.appendChild(numberRating);
+    document.getElementById("starRating").appendChild(starRating);
+    buildRatings(movieInfo.ratings);
+}
 
 favorite.addEventListener('click', (event) => {
     const currTitle = document.getElementById("movieTitle").textContent.substring(0, document.getElementById("movieTitle").textContent.indexOf('(')).trim();
@@ -515,6 +492,23 @@ favorite.addEventListener('click', (event) => {
     }
 });
 
+function getBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+
+        reader.onload = () => {
+            resolve(reader.result); // Resolve with the Base64 string when successfully loaded
+        };
+
+        reader.onerror = (error) => {
+            reject(error); // Reject with an error if something goes wrong
+        };
+
+        reader.readAsDataURL(file);
+    });
+}
+
+/* Explore */
 whatsNew.addEventListener('click', (event) => {
     setMovieInfoWhatsNew();
 })
@@ -535,62 +529,16 @@ feelingLucky.addEventListener('click', async (event) => {
     setDisplay();
 });
 
-const infoForm = document.getElementById("addForm");
+const elements = document.querySelectorAll('.genreLink');
 
-function getBase64(file) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-
-        reader.onload = () => {
-            resolve(reader.result); // Resolve with the Base64 string when successfully loaded
-        };
-
-        reader.onerror = (error) => {
-            reject(error); // Reject with an error if something goes wrong
-        };
-
-        reader.readAsDataURL(file);
-    });
- }
- 
-
-infoForm.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const type = document.getElementById("typeSelect").value;
-    const title = document.getElementById("titleInput").value;
-    const releaseDate = document.getElementById("releaseDateInput").value;
-    const directors = document.getElementById("directorInput").value;
-    const castList = document.getElementById("mainCastInput").value;
-    const genres = document.getElementById("genresInput").value;
-    const summary = document.getElementById("summaryInput").value;
-    const image = document.getElementById("fileInput");
-    const ratings = [];
-    
-    let dateArray = releaseDate.split('/');
-    let m = dateArray[0];
-    let d = dateArray[1];
-    let y = dateArray[2];
-
-    const imageFile = document.getElementById('fileInput').files[0];
-    let base64 = null;
-    await getBase64(imageFile)
-    .then((base64String) => {
-        base64 = base64String;
-    })
-    .catch((error) => {
-        console.error('Error converting file to Base64:', error);
-    });
-    let movieObj = new MovieInfo(type, base64, title, {m,d,y}, genres, castList, directors, summary);
-    await showMovie.createNewMovie(movieObj, ratings);
-    window.alert("Movie Added! Reloading Database...");
-    location.reload();
+elements.forEach(element => {
+  element.addEventListener('click', (event) => {
+    console.log(element.textContent);
+   setMovieInfoGenre(element.textContent);
+  });
 });
 
-const editImg = document.getElementById("imageChange");
-const editText = document.getElementById("textChange");
-const editType = document.getElementById("editSelect");
-const editSubmit = document.getElementById("editSubmit");
-
+/* Edit Movie */
 editSubmit.addEventListener('click', async (event) => {
     event.preventDefault();
     let str = document.getElementById("movieTitle").textContent;
@@ -679,22 +627,18 @@ document.getElementById("openEdit").addEventListener('click', (event) => {
     document.getElementById("myForm").style.display = "block";
 });
 
-document.getElementById("myListLink").addEventListener('click', (event) => {
-    let myList = JSON.parse(localStorage.getItem('myList'))
-    console.log(myList);
-    console.log(myList.length == 0)
-    if(myList.length == 0){
-        console.log(window.alert("Your List Is Empty!"));
-    }
-    else{
-        setMovieInfoMyList(myList);
+document.getElementById("trash").addEventListener('click', async (event) => {
+    let deletePrompt = window.confirm("Are you sure you want to delete this?");
+    if(deletePrompt == true){
+        let str = document.getElementById("movieTitle").textContent;
+        let title = str.substring(0, str.indexOf('(')).trim();
+        console.log(title);
+        await showMovie.deleteMovie(title);
+        location.reload();
     }
 });
 
-document.getElementById("userLink").addEventListener('click', (event) => {
-    /** Implement Username */
-})
-
+/*Ratings */
 document.getElementById("addRating").addEventListener('click', (event) => {
     document.getElementById("ratingForm").style.display = "block"
 });
@@ -718,4 +662,73 @@ document.getElementById("ratingSubmit").addEventListener('click', async (event) 
     console.log(ratings)
 })
 
+const buildRatings = (ratings) => {
+    let index = 0;
+    const numCols = ratings.length, ratingList = document.getElementById('ratingsList');
+    ratingList.innerHTML = "";
+    for(let i = 0; i < numCols; i++){
+      let col = document.createElement('div');
+      col.classList.add('rating');
+      let stars = ratings[i].stars;
+      let review = ratings[i].review;
+      let tags = ratings[i].tags;
+      let author = ratings[i].author;
+      let starsElement = document.createElement('div');
+      let temp = stars
+      console.log(temp);
+      while(temp >= 0.5){
+        let star = document.createElement('i');
+        if(temp >= 1){
+            star.classList.add("fa", "fa-star");
+            temp--;
+        }
+        else if(temp > 0){
+            star.classList.add("fa","fa-star-half");
+            temp = temp - 0.5;
+        }
+        starsElement.appendChild(star);
+      }
+      let starsLabel = document.createElement('i');
+      starsLabel.textContent = "  (" + stars + ")";
+      starsElement.appendChild(starsLabel);
+      starsElement.classList.add("starsElement");
+      col.appendChild(starsElement);
+      let reviewElement = document.createElement('div');
+      reviewElement.textContent = review;
+      reviewElement.classList.add("reviewElement");
+      col.appendChild(reviewElement);
+      let tagsElement = document.createElement('div');
+      tagsElement.textContent = "Tags:  " +  tags;
+      tagsElement.classList.add("tagsElement");
+      col.appendChild(tagsElement);
+      let authorElement = document.createElement('div');
+      let img = document.createElement('i');
+      img.classList.add("fa" , "fa-user-circle");
+      authorElement.appendChild(img);
+      let authorName = document.createElement('i');
+      authorName.textContent = "  " + author;
+      authorElement.appendChild(authorName);
+      authorElement.classList.add("authorElement");
+      col.appendChild(authorElement);
+      let spacer = document.createElement('div');
+      spacer.classList.add("spacer");
+      ratingList.appendChild(spacer);
+      ratingList.appendChild(col);  
+   }
+};
 
+async function calculateAvergaeRating(title){
+    let movie = await showMovie.getMovie(title);
+    let ratings = movie.ratings;
+    if(ratings.length == 0){
+        return 0;
+    }
+    else{
+    let total = 0;
+    for (let i = 0; i < ratings.length; ++i){
+        total = total + parseInt(ratings[i].stars, 10)
+        console.log(total);
+    }
+    return (total/ratings.length);
+    }   
+}

@@ -2,7 +2,7 @@ class movieDisplay {
     constructor() {
       this.movies = [];
     }
-  
+  /* Creates Movie */
     async createNewMovie(information, rating) {
       try {
         const response = await fetch('/addMovie', {
@@ -20,7 +20,7 @@ class movieDisplay {
         console.error('Error:', error);
       }
     }
-
+/* Updates Movie */
     async editMovie(title, field, newValue) {
         try {
             const response = await fetch('/editMovie', {
@@ -44,7 +44,7 @@ class movieDisplay {
             throw error; // Rethrow the error or handle it appropriately
         }
     }
-
+/* Updates Movie Ratings */
     async addRating(title, rating) {
         try {
             const response = await fetch('/addRating', {
@@ -68,7 +68,7 @@ class movieDisplay {
             throw error; // Rethrow the error or handle it appropriately
         }
     }
-
+/* Reads Movie */
     async getMovie(id) {
         const response = await fetch(`/getMovie?id=${id}`);
         if (!response.ok) {
@@ -83,6 +83,22 @@ class movieDisplay {
         return movieInfo;
     }
 
+    async deleteMovie(id) {
+        const response = await fetch(`/deleteMovie?id=${id}`, {
+            method: 'DELETE'
+          });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch movie: ${response.status} ${response.statusText}`);
+        }
+        const contentType = response.headers.get('content-type');
+        
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Response is not in JSON format');
+        }
+        const movieInfo = await response.json();
+        return movieInfo;
+    }
+/* Reads Movies (Genre) */
     async getGenre(genre) {
         const response = await fetch(`/getGenre?genre=${genre}`);
         if (!response.ok) {
@@ -97,7 +113,7 @@ class movieDisplay {
         console.log(movieInfo)
         return movieInfo;
     }
-
+/* Reads Movies (Similar)*/
     async getSimilar(type, title) {
         const response = await fetch(`/getSimilar?type=${type}&title=${title}`);
         if (!response.ok) {
@@ -112,7 +128,7 @@ class movieDisplay {
         console.log(movieInfo)
         return movieInfo;
     }
-
+/* Reads Movies (My List)*/
     async getMyList(list) {
         const response = await fetch(`/getMyList?list=${list}`);
         if (!response.ok) {
@@ -127,7 +143,7 @@ class movieDisplay {
         console.log(movieInfo)
         return movieInfo;
     }
-
+/* Reads Movies (WhatsNew) */
     async getWhatsNew() {
         const response = await fetch('/whatsNew');
         if (!response.ok) {
@@ -141,7 +157,7 @@ class movieDisplay {
         const movieInfo = await response.json();
         return movieInfo;
     }
-
+/* Reads Movies (AtoZ)*/
     async getAtoZ() {
         const response = await fetch('/atoz');
         if (!response.ok) {
@@ -155,7 +171,7 @@ class movieDisplay {
         const movieInfo = await response.json();
         return movieInfo;
     }
-    
+/* Reads Movies (Random)*/    
     async getRandom() {
         const response = await fetch(`/getRandom`);
         
