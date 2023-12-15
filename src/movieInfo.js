@@ -3,14 +3,14 @@ class movieDisplay {
       this.movies = [];
     }
   
-    async createNewMovie(information) {
+    async createNewMovie(information, rating) {
       try {
         const response = await fetch('/addMovie', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(information)
+          body: JSON.stringify({information, rating})
         });
   
         if (!response.ok) {
@@ -130,6 +130,20 @@ class movieDisplay {
 
     async getWhatsNew() {
         const response = await fetch('/whatsNew');
+        if (!response.ok) {
+            throw new Error(`Failed to fetch movies: ${response.status} ${response.statusText}`);
+        }
+        const contentType = response.headers.get('content-type');
+        
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Response is not in JSON format');
+        }
+        const movieInfo = await response.json();
+        return movieInfo;
+    }
+
+    async getAtoZ() {
+        const response = await fetch('/atoz');
         if (!response.ok) {
             throw new Error(`Failed to fetch movies: ${response.status} ${response.statusText}`);
         }

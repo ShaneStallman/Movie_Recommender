@@ -20,9 +20,10 @@ async connect() {
   }
 }
 
-async createNewMovie(information) {
+async createNewMovie(information, ratings) {
   try {
     const res = await this.collection.insertOne({information});
+    await this.addRating(information.title, ratings);
     console.log(`Success`);
     return res;
 } catch (error) {
@@ -62,18 +63,23 @@ async searchMoviesByGenre(genre) {
 
 async readAllMovies() {
   let res = await this.collection.find({}).toArray();
-  res.sort((a,b) => b.information.title - a.information.title);
+  let returnArray = res.sort((a, b) => a.information.title.localeCompare(b.information.title));
   let sliceNumber = 20;
   if(sliceNumber >= res.length){
     sliceNumber = res.length;
   }
-  const allMovies20 = res.slice(0,sliceNumber);
+  const allMovies20 = returnArray.slice(0,sliceNumber);
   return allMovies20;
 }
 
 async compareAllMovies(type, title) {
   const baseMovieArray = await this.collection.find({'information.title': title}).toArray();
+  if(baseMovieArray.length == 0){
+    return [];
+  }
+  else{
   let baseMovie = baseMovieArray[0];
+  
   const allMovies = await this.collection.find({}).toArray();
   let sortingArray = [];
   for(let movie in allMovies){
@@ -111,7 +117,23 @@ async compareAllMovies(type, title) {
           }
         }
       }
-      
+      //Calculate Tags
+      let baseRatingsArray = baseMovie.ratings;
+      let compareRatingsArray = allMovies[movie].ratings;
+      for(let baseRatings in baseRatingsArray){
+        let baseTagsArray = baseMovie.ratings[baseRatings].tags.split(", ");
+        for(let compareRatings in compareRatingsArray){
+          let compareTagsArray = allMovies[movie].ratings[compareRatings].tags.split(", ");
+          for(let baseTags in baseTagsArray){
+            for(let compareTags in compareTagsArray){
+              if(baseTagsArray[baseTags] == compareTagsArray[compareTags]){
+                points += 0.2;
+            }
+          }
+        }
+      }
+    }
+
       sortingArray.push({"title": allMovies[movie].information.title, "points": points})
       
     }
@@ -126,6 +148,7 @@ async compareAllMovies(type, title) {
 
   returnArray.slice(0,20);  
   return returnArray;
+}
 }
 
 async getWhatsNew() {

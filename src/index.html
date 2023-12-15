@@ -13,26 +13,28 @@
     <div class="dashboard-container">
       <div class="banner">
         <span>&nbsp;&nbsp;<h1 class="fa fa-film" style="font-size:36px"> Movie Recommender</h1></span>
+        <div class = "user"><span id="username" >Anonymus</span>
         <div class="dropdown">
           <Button class="fa fa-user-circle" style="padding: 10px; border: none; background: none; font-size: 42px;">&nbsp;</Button>
           <div class="dropdown-content-profile">
+            <a id="userLink" href="#">Username Change</a>
             <a id="myListLink" href="#">My List</a>
             <a href="#">Settings</a>
           </div>
         </div>
-        
+        </div>
       </div>
       <div class="content">
         <div class="flex-container">
           <div class="search-container">
-            <h3>Search Bars</h3>
+            <h3 class = "explore">Explore</h3>
             <Button id="new" class = "link">What's New</Button>
-            <Button id="trend" class = "link">Trending</Button>
+            <Button id="trend" class = "link">Popular</Button>
             <Button class = "link" id="lucky">Feeling Lucky</Button>
             <div class="dropdown">
               <Button id="genreSearch" class = "dropbtn">Genres</Button>
               <div class="dropdown-content-genre">
-                <Button class = "genreLink">Action</Button>
+                <Button class = "genreLink top">Action</Button>
                 <Button class = "genreLink">Adventure</Button>
                 <Button class = "genreLink">Animation</Button>
                 <Button class = "genreLink">Biography</Button>
@@ -45,7 +47,7 @@
                 <Button class = "genreLink">Game-Show</Button>
                 <Button class = "genreLink">History</Button>
                 <Button class = "genreLink">Horror</Button>
-                <Button class = "genreLink">Musical</Button>
+                <Button class = "genreLink">Music</Button>
                 <Button class = "genreLink">Mystery</Button>
                 <Button class = "genreLink">Reality-TV</Button>
                 <Button class = "genreLink">Romance</Button>
@@ -54,24 +56,29 @@
                 <Button class = "genreLink">Talk-Show</Button>
                 <Button class = "genreLink">Thriller</Button>
                 <Button class = "genreLink">War</Button>
-                <Button class = "genreLink">Western</Button>
+                <Button class = "genreLink bottom">Western</Button>
               </div>
             </div>
-            <Button id = "add"> Add A Movie/Series!</Button>
+            <Button id = "add" class = "button"> Add A Movie/Series!</Button>
           </div>
           <div class="table-container" id="movieGridDisplay">
             
             <div class="searchBar">
               <span class = "fa fa-search" style = "font-size: 20px;"></span>
               <Input id="input" placeholder="Find Similar Movies To..." class ="movieInput"></Input>
-              <Button id="search">Search</Button>
-              <Button id="mvSwitch">Movies</Button>
-              <Button id="tvSwitch">TV Series</Button>
+              <Button id="search" class = "button">Search</Button>
+              <Button id="mvSwitch" class = "button">Movies</Button>
+              <Button id="tvSwitch" class = "button">TV Series</Button>
+            </div>
+            <div id = "notFound" class = "notFound" style="display: none;">
+              Sorry, we don't have this movie in our database. Feel free to add it and 
+              continue searching!
+              <Button id = "add2" class = "button"> Add Here!</Button>
             </div>
             <div class="display" id="theGrid"></div>
           </div>
         <div id="infoDisplay" class="infoDisplay" style="display: none;">
-          <Button id="back"> &#8592 Back</Button>
+          <Button id="back" class = "button"> &#8592 Back</Button>
           <div class = "information">
             <div id="movieCover" class="cover">
              <img src="https://upload.wikimedia.org/wikipedia/commons/0/03/Question_mark_grey.svg" id="movieImg" class="coverImage">
@@ -86,16 +93,12 @@
             <span id="summary" class = "infoText"> Summary </span><br/>
             <label class = "info_label">Genres: </label>
             <span id="genres" class = "infoText"> Genres </span><br/>
-            <label class = "info_label">Overall Rating: </label>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span>
-            <span class="fa fa-star checked"></span><br/>
-            <button class="editor" id="openEdit">Edit</button>
+            <span> <label class = "info_label">Overall Rating: </label>
+            <div id = "starRating"></div></span><br/>
+            <button class = "button" id="openEdit">Edit</button>
             <div class="chat-popup" id="myForm" style="display: none;">
               <form enctype="multipart/form-data" class="form-container">
-                <h1>Edit<i>&nbsp;&nbsp;</i><i id="editText" class="fa fa-edit" style="font-size:12px;"></i></h1>
+                <h3 style = "color: black">Edit<i>&nbsp;&nbsp;</i><i id="editText" class="fa fa-edit" style="font-size:12px;"></i></h3>
             
                 <select id="editSelect" name="Edit Field">
                   <option value="0">Choose Field</option>
@@ -107,30 +110,29 @@
                   <option value="6">Image</option>
                 </select>
                 <textarea id="textChange" placeholder="Text Changes Here or Image Change Below" name="msg" required></textarea>
-                <input class = "editFile" type="file" id="imageChange" accept="image/*" style="display: none;">
+                <input class = "editFile" type="file" id="imageChange" accept="image/*" style="color: black; display: none;">
                 <button id="editSubmit" type="submit" class="btn">Submit Edit</button>
                 <button type="button" id="closeEdit" class="btn cancel">Cancel Edit</button>
               </form>
             </div>
           </div>
           </div>
-          <div id="ratings" class="rating">/** Ratings go Here **/
-            <Button id="addRating">Add Rating</Button>
+          <div id="ratings" class="ratingDisplay">
+            <Button id="addRating" class = "button">Add Rating</Button>
             <div class="chat-popup" id="ratingForm" style="display: none;">
               <form enctype="multipart/form-data" class="form-container">
-                <h1>Rating</h1>
-            
                 <input id="stars" placeholder="stars">
                 <textarea id="reviewText" placeholder="Leave a Review Here!" name="msg" required></textarea>
                 <input id="tags" placeholder="Add Some Tag Words">
-                <button id="ratingSubmit" type="submit" class="btn">Submit Edit</button>
-                <button type="button" id="closeRating" class="btn cancel">Cancel Edit</button>
+                <button id="ratingSubmit" type="submit" class="btn">Submit Rating</button>
+                <button type="button" id="closeRating" class="btn cancel">Cancel Rating</button>
               </form>
             </div>
+            <div id="ratingsList" class = "ratingsList"></div>
           </div>
         </div> 
         <div id="infoDisplay2" class="infoDisplay2" style="display: none;">
-          <Button id="back2"> &#8592 Back</Button>
+          <Button class = "button" id="back2"> &#8592 Back</Button>
           <div class = "information2">
             <form class="addForm" id="addForm" enctype="multipart/form-data">
               <label for="typeSelect">Type:</label>
@@ -163,8 +165,6 @@
               <input type="submit" value="Submit">
           </form>
           </div>
-          <div id="ratings" class="rating">/** Ratings go Here **/</div>
-          <button id="submit">Submit</button>
         </div> 
         </div>
       </div>

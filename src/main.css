@@ -1,6 +1,10 @@
 :root {
     --banner-height: 64px;
+    color: black;
+    background-color: rgba(38, 38, 38, 1);
   }
+
+  
   .dashboard-container {
     height: 100vh;
   }
@@ -13,22 +17,43 @@
   .content {
     display: flex;
     flex-direction: column; 
+    position: relative;
   }
   
+  .movieInput::placeholder{
+    color: rgba(100,100,100,0.8);
+  }
+
+  .movieInput{
+    background-color: rgb(253, 154, 231);
+    border-radius: 10px;
+    
+  }
+
+  .button{
+    background-color: rgb(253, 154, 231);
+    border-radius: 10px;
+  }
+
+
   .flex-container {
+    padding-top: 10px;
     display: flex;
-    height: 80vh;
+    height:85vh;
+    position: relative;
   }
   
   .search-container {
     width: 15vw;
     margin-right: 10px; 
-    border: 1px solid #ccc;
+    border: 1px solid black;
+    background-color: rgba(100,100,100);
+    border-radius: 10px;
     padding: 10px;
-    display: flex; /* Turn on flexbox */
-    flex-direction: column; /* Arrange items vertically */
-    justify-content:space-evenly; /* Align items vertically in the center */
-    align-items: center; /* Center items horizontally */
+    display: flex; 
+    flex-direction: column; 
+    justify-content:space-evenly;
+    align-items: center; 
     position: relative;
 }
   
@@ -42,7 +67,14 @@
     justify-content: center;
     align-items: center;
     position: sticky;
+    background-color: rgba(100,100,100);
+    border-radius: 10px;
   }
+
+  .fa-search{
+    color:rgb(253, 154, 231);
+  }
+
   .display {
     flex: 85vw; 
     padding: 10px;
@@ -55,18 +87,22 @@
     height: 280px;
     width: 180px;
     margin: 10px; /* Add some margin to separate the cards */
+    border-radius: 10px;
 }
 
 .cardTitle {
   overflow: hidden;
   height:20px;
   text-align: center;
+  color: white;
+  border-radius: 10px;
 }
 
 .cardImg {
     height: 100%; /* Ensure the image fills the card container */
     width: 100%;
     object-fit: cover; /* Maintain aspect ratio without stretching */
+    border-radius: 10px;
 }
 
 .grid-col {
@@ -88,40 +124,62 @@
     /*optional*/
     font-family: arial, sans-serif;
     /*input has OS specific font-family*/
-    color: #069;
+    color: white;
     text-decoration: underline;
     cursor: pointer;
+    font-size: 20px;
+  }
+
+  .link:hover{
+    color: rgb(253, 154, 231);
   }
 
   .genreLink {
-    background: none!important;
     border: none;
-    /*optional*/
-    font-size: 10px;
-    color: #069;
+    background-color: rgb(255, 217, 235);
+    width: 15vw;
+    font-size: 20px;
     text-decoration: underline;
     cursor: pointer;
   }
+
+  .top{
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+  }
   
+  .bottom{
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+  }
+
+  .notFound{
+    color: white;
+    font-size: 30px;
+    height: 60vh;
+    width: 60vw;
+    padding: 10px;
+  }
+
   .infoDisplay {
     width: 85vw;
     margin-right: 10px; 
-    border: 1px solid #ccc;
     padding: 10px;
     justify-content: flex;
     position: relative;
-    border: 1px solid black;
-    background-color: #069;
+    background-color: rgba(100,100,100);
+    border-radius: 10px;
   }
 
   .cover {
-    width: 200px; /* Set width of the container */
-    height: 300px; /* Set height of the container */
-    border: 1px solid #ccc; /* Optional: Border for visualization */
+    width: 240px; /* Set width of the container */
+    height: 360px; /* Set height of the container */
+     /* Optional: Border for visualization */
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden; /* Hide overflow content */
+    border-radius: 10px;
   }
   
   .coverImage {
@@ -129,12 +187,58 @@
     height: 100%;
     object-fit: cover; /* Adjusts the image to cover the entire container */
   }
-  .info{
-    width:55vw;
-    border: 1px solid black;
+
+  .explore{
+    font-size: 40px;
+    font-family: "Copperplate" , fantasy;
+    font-stretch: ultra-expanded;
+    color: rgb(253, 154, 231);
   }
-  .rating{
+
+  .info{
+    width:60vw;
     border: 1px solid black;
+    border-radius: 10px;
+    background-color: rgba(38, 38, 38, 1);
+    color: white;
+  }
+
+  .info label {
+    padding-left: 10px;
+  }
+
+  .info span {
+    padding-left: 5px;
+  }
+
+  .info div {
+    padding-left: 10px;
+  }
+  .ratingDisplay{
+    border: 1px solid black;
+    height: 25vh;
+    overflow: auto;
+    padding: 4px;
+    position: relative;
+    border-radius: 10px;
+    background-color: rgba(38, 38, 38, 1);
+    color: white;
+  }
+
+  .rating{
+    padding: 10px;
+    background-color: rgba(100,100,100,1);
+    border-radius: 10px;
+  }
+
+  .spacer{
+    height: 10px;
+  }
+
+  .addRating {
+    position: sticky;
+    top: 0;
+    z-index: 1;
   }
 
   .information{
@@ -143,6 +247,7 @@
     padding-right: 30px;
     display: flex;
     justify-content: space-between;
+    border-radius: 10px;
   }
 
   .movieInfo{
@@ -164,11 +269,14 @@
     justify-content: left;
     position: relative;
     border: 1px solid black;
-    background-color: #069;
+    background-color: rgba(100,100,100);
+    overflow: auto;
+    border-radius: 10px;
   }
   .information2{
     justify-content: left;
     display: flex;
+    overflow: auto;
   }
   .addForm {
     max-width: 300px;
@@ -201,7 +309,7 @@
 
 /* Optional: Style submit button */
 .addForm input[type="submit"] {
-    background-color: rgb(253, 154, 231);
+    background-color: rgba(209, 134, 146, 1);
     color: white;
     border: none;
     border-radius: 4px;
@@ -213,18 +321,24 @@
     background-color: #45a049;
 }
 
-.checked{
+.fa-star{
   color: orange;
 }
 
+.fa-star-half{
+  color: orange;
+}
 
 /* Dropdown Button */
 .dropbtn {
-  background-color: #04AA6D;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
+  background: none!important;
   border: none;
+  padding: 0!important;
+  font-family: arial, sans-serif;
+  color: white;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 20px;
 }
 
 /* The container <div> - needed to position the dropdown content */
@@ -237,7 +351,7 @@
 .dropdown-content-profile {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
+  background-color: rgb(255, 217, 235);
   width: 160px; /* Optional: Set a fixed width if needed */
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
@@ -248,12 +362,13 @@
 .dropdown-content-genre {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
-  width: 160px; /* Optional: Set a fixed width if needed */
+  background-color: rgb(255, 217, 235);
+  border-radius: 10px;
+  width: 15vw; /* Optional: Set a fixed width if needed */
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   z-index: 1;
-  left: 85px; /* Adjust the value based on the width of the dropdown */
-  top: -50vh;
+  left: -80px; /* Adjust the value based on the width of the dropdown */
+  top: -60vh;
 }
 
 /* Links inside the dropdown */
@@ -273,9 +388,11 @@
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content-profile a:hover{background-color: #ddd;}
+.dropdown-content-profile a:hover{background-color: rgb(255, 160, 212);}
 
-.genreLink:hover {background-color: #ddd;}
+
+
+.genreLink:hover {background-color: rgb(255, 160, 212);}
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content-profile {
@@ -287,7 +404,7 @@
 }
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
+.dropdown:hover .dropbtn {background-color: rgb(253, 154, 231);}
 
 /* Button used to open the chat form - fixed at the bottom of the page */
 .open-button {
@@ -361,4 +478,8 @@
 
 .editFile{
   padding:5px;
+}
+
+.reviewElement{
+  font-size: 18px;
 }

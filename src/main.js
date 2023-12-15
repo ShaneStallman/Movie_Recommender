@@ -17,6 +17,7 @@ const addDisplay = document.getElementById("infoDisplay2");
 const backButton = document.getElementById("back");
 const backButton2 = document.getElementById("back2");
 const addButton = document.getElementById("add");
+const addButton2 = document.getElementById("add2");
 const feelingLucky = document.getElementById("lucky");
 const favorite = document.getElementById("favorite");
 const whatsNew = document.getElementById("new");
@@ -102,12 +103,12 @@ function addMovieDisplay(){
     }
 }
 
-const build = () => {
+const buildDisplay = () => {
     let index = 0;
     const numCols = 5,
       numRows = 4,
       theGrid = document.getElementById('theGrid');
-      setMovieInfoWhatsNew();
+      setMovieInfoAtoZ();
     for(let i = 0; i < numCols; i++){
       let col = document.createElement('div');
       col.classList.add('grid-col');
@@ -139,9 +140,80 @@ const build = () => {
    }
   };
   
-  build();
+  buildDisplay();
   
-  function loadInfo(movieInfo){
+  const buildRatings = (ratings) => {
+    let index = 0;
+    const numCols = ratings.length, ratingList = document.getElementById('ratingsList');
+    ratingList.innerHTML = "";
+    for(let i = 0; i < numCols; i++){
+      let col = document.createElement('div');
+      col.classList.add('rating');
+      let stars = ratings[i].stars;
+      let review = ratings[i].review;
+      let tags = ratings[i].tags;
+      let author = ratings[i].author;
+      let starsElement = document.createElement('div');
+      let temp = stars
+      console.log(temp);
+      while(temp >= 0.5){
+        let star = document.createElement('i');
+        if(temp >= 1){
+            star.classList.add("fa", "fa-star");
+            temp--;
+        }
+        else if(temp > 0){
+            star.classList.add("fa","fa-star-half");
+            temp = temp - 0.5;
+        }
+        starsElement.appendChild(star);
+      }
+      let starsLabel = document.createElement('i');
+      starsLabel.textContent = "  (" + stars + ")";
+      starsElement.appendChild(starsLabel);
+      starsElement.classList.add("starsElement");
+      col.appendChild(starsElement);
+      let reviewElement = document.createElement('div');
+      reviewElement.textContent = review;
+      reviewElement.classList.add("reviewElement");
+      col.appendChild(reviewElement);
+      let tagsElement = document.createElement('div');
+      tagsElement.textContent = "Tags:  " +  tags;
+      tagsElement.classList.add("tagsElement");
+      col.appendChild(tagsElement);
+      let authorElement = document.createElement('div');
+      let img = document.createElement('i');
+      img.classList.add("fa" , "fa-user-circle");
+      authorElement.appendChild(img);
+      let authorName = document.createElement('i');
+      authorName.textContent = "  " + author;
+      authorElement.appendChild(authorName);
+      authorElement.classList.add("authorElement");
+      col.appendChild(authorElement);
+      let spacer = document.createElement('div');
+      spacer.classList.add("spacer");
+      ratingList.appendChild(spacer);
+      ratingList.appendChild(col);  
+   }
+  };
+
+  async function calculateAvergaeRating(title){
+    let movie = await showMovie.getMovie(title);
+    let ratings = movie.ratings;
+    if(ratings.length == 0){
+        return 0;
+    }
+    else{
+    let total = 0;
+    for (let i = 0; i < ratings.length; ++i){
+        total = total + parseInt(ratings[i].stars, 10)
+        console.log(total);
+    }
+    return (total/ratings.length);
+    }   
+  }
+
+  async function loadInfo(movieInfo){
     /* Load Image */
     document.getElementById("movieImg").src=movieInfo.image;
     let array = JSON.parse(localStorage.getItem('myList'));
@@ -177,9 +249,36 @@ const build = () => {
     /** Load Ratings
      * 
      */
+    document.getElementById("starRating").innerHTML = "";
+    let ratingCalc = await calculateAvergaeRating(movieInfo.title);
+    let temp = ratingCalc;
+    let starRating = document.createElement('div');
+      console.log(temp);
+      while(temp >= 0.5){
+        let star = document.createElement('i');
+        if(temp >= 1){
+            star.classList.add("fa", "fa-star");
+            temp--;
+        }
+        else if(temp > 0){
+            star.classList.add("fa","fa-star-half");
+            temp = temp - 0.5;
+        }
+        starRating.appendChild(star);
+      }
+      
+      let numberRating = document.createElement('i');
+      numberRating.textContent = "  (" + Math.round(ratingCalc * 10) / 10 + ")";
+      starRating.appendChild(numberRating);
+    document.getElementById("starRating").appendChild(starRating);
+    buildRatings(movieInfo.ratings);
   }
 
 addButton.addEventListener('click', () => {
+    addMovieDisplay();
+});
+
+addButton2.addEventListener('click', () => {
     addMovieDisplay();
 });
 
@@ -227,6 +326,31 @@ async function setMovieInfoRandom(){
 
 async function setMovieInfoWhatsNew(){
     let movieArray = await showMovie.getWhatsNew();
+    let returnArray = [];
+    for(let i = 0; i < movieArray.length; ++i){
+        let pullMovie = movieArray[i];
+        const dataUrl = pullMovie.information.image; // Your Data URL here
+        const base64String = dataUrl.split(',')[1]; // Extract the Base64 portion after the comma
+
+        let imageString = `data:image/png;base64,${base64String}`;
+        let setMovie = new MovieInfo(
+            pullMovie.information.type, 
+            imageString, 
+            pullMovie.information.title, 
+            pullMovie.information.releaseDate, 
+            pullMovie.information.genres, 
+            pullMovie.information.castList, 
+            pullMovie.information.directors, 
+            pullMovie.information.summary,
+            pullMovie.ratings);
+        returnArray.push(setMovie);
+        }
+    console.log(returnArray);
+    renderDisplay(returnArray);
+}
+
+async function setMovieInfoAtoZ(){
+    let movieArray = await showMovie.getAtoZ();
     let returnArray = [];
     for(let i = 0; i < movieArray.length; ++i){
         let pullMovie = movieArray[i];
@@ -328,8 +452,12 @@ async function setEditInfo(title, field, newValue){
 }
 
 async function getSimilar(type, title){
+    let notFound = document.getElementById("notFound")
+    notFound.style.display = 'none';
     let movieArray = await showMovie.getSimilar(type, title);
-    console.log(movieArray)
+    if(movieArray.length == 0){
+        notFound.style.display = 'block';
+    }
     let returnArray = [];
     for(let i = 0; i < movieArray.length; ++i){
         let pullMovie = movieArray[i];
@@ -351,7 +479,7 @@ async function getSimilar(type, title){
         }
     console.log(returnArray)
     renderDisplay(returnArray);
-}
+    }
 
 document.getElementById("search").addEventListener('click', (event) => {
     let type = 0;
@@ -365,7 +493,7 @@ document.getElementById("search").addEventListener('click', (event) => {
     getSimilar(type, title);
 });
 
-favorite.addEventListener('click', (event => {
+favorite.addEventListener('click', (event) => {
     const currTitle = document.getElementById("movieTitle").textContent.substring(0, document.getElementById("movieTitle").textContent.indexOf('(')).trim();
     favorite.classList.toggle('fa-heart-o');
     favorite.classList.toggle('fa-heart');
@@ -385,7 +513,7 @@ favorite.addEventListener('click', (event => {
         console.log(userWatchList);
         console.log(localStorage.getItem('myList'));
     }
-}));
+});
 
 whatsNew.addEventListener('click', (event) => {
     setMovieInfoWhatsNew();
@@ -436,6 +564,7 @@ infoForm.addEventListener('submit', async (event) => {
     const genres = document.getElementById("genresInput").value;
     const summary = document.getElementById("summaryInput").value;
     const image = document.getElementById("fileInput");
+    const ratings = [];
     
     let dateArray = releaseDate.split('/');
     let m = dateArray[0];
@@ -451,9 +580,10 @@ infoForm.addEventListener('submit', async (event) => {
     .catch((error) => {
         console.error('Error converting file to Base64:', error);
     });
-    let movieObj = new MovieInfo(type, base64, title, {m,d,y}, genres, castList, directors, summary, []);
-    showMovie.createNewMovie(movieObj);
-    setDisplay();
+    let movieObj = new MovieInfo(type, base64, title, {m,d,y}, genres, castList, directors, summary);
+    await showMovie.createNewMovie(movieObj, ratings);
+    window.alert("Movie Added! Reloading Database...");
+    location.reload();
 });
 
 const editImg = document.getElementById("imageChange");
@@ -505,6 +635,8 @@ editSubmit.addEventListener('click', async (event) => {
     
     console.log({title,field,newValue});
     let edits = await setEditInfo(title, field, newValue);
+    let movieInfo = showMovie.getMovie(title);
+    loadInfo(movieInfo);
 })
 
 editType.addEventListener('change', (event) => {
@@ -548,8 +680,19 @@ document.getElementById("openEdit").addEventListener('click', (event) => {
 });
 
 document.getElementById("myListLink").addEventListener('click', (event) => {
-    console.log(JSON.parse(localStorage.getItem('myList')));
-    setMovieInfoMyList(JSON.parse(localStorage.getItem('myList')));
+    let myList = JSON.parse(localStorage.getItem('myList'))
+    console.log(myList);
+    console.log(myList.length == 0)
+    if(myList.length == 0){
+        console.log(window.alert("Your List Is Empty!"));
+    }
+    else{
+        setMovieInfoMyList(myList);
+    }
+});
+
+document.getElementById("userLink").addEventListener('click', (event) => {
+    /** Implement Username */
 })
 
 document.getElementById("addRating").addEventListener('click', (event) => {
@@ -569,6 +712,9 @@ document.getElementById("ratingSubmit").addEventListener('click', async (event) 
     let tags = document.getElementById("tags").value;
     let author = "Anonymous";
     let ratings = await showMovie.addRating(title, {stars, review, tags, author});
+    document.getElementById("ratingForm").style.display = "none";
+    let movieInfo = await getMovieInfo(title);
+    loadInfo(movieInfo)
     console.log(ratings)
 })
 

@@ -14,10 +14,10 @@ app.use(logger('dev'));
 app.use('/', express.static('src'));
 
 app.post('/addMovie', async (req, res) => {
-    const information = req.body;
+    const {information, rating} = req.body;
     try {
       await mongo.connect();
-      await mongo.createNewMovie(information)
+      await mongo.createNewMovie(information, rating)
       .then(() => {
         res.status(200).json({ status: 'success' });
       })
@@ -83,7 +83,7 @@ app.get('/getMovie', async (req, res) => {
     await mongo.connect();
     const data = await mongo.compareAllMovies(type, title);
     res.status(200).json(data);
-    //await mongo.close();
+    await mongo.close();
     }
     catch (error) {
       console.error('Error retrieving movie', error);
@@ -109,6 +109,19 @@ app.get('/getMovie', async (req, res) => {
     try {
     await mongo.connect();
     const data = await mongo.getWhatsNew();
+    res.status(200).json(data);
+    await mongo.close();
+    }
+    catch (error) {
+      console.error('Error retrieving movie', error);
+      res.status(500).json({ status: 'error', message: 'Failed to retrieve movie' });
+    }
+  });
+
+  app.get('/atoz', async (req, res) => {
+    try {
+    await mongo.connect();
+    const data = await mongo.readAllMovies();
     res.status(200).json(data);
     await mongo.close();
     }
